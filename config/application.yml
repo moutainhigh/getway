@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: getway
+  redis:
+    #    host: 678221265f85483e.m.cnhza.kvstore.aliyuncs.com
+    #    port: 6379
+    #    password: 678221265f85483e:Min7719735
+    host: 121.41.31.100
+    port: 6379
+    timeout: 500000
+    database: 0
+    pool:
+      max-active: 3000
+      max-wait: 1500
+      max-idle: 1000
+      testOnBorrow: false
+      testOnReturn: false
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7000/eureka/
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 20
+server:
+  port: 7003
+zuul:
+#  #  隐藏所有微服务名称(即使用微服务名称无法访问到服务)
+#  ignored-services: "*"
+  #  服务前缀名，想要访问项目之前要加上此路径
+  routes:
+    #key 为服务名  后面为拦截的路径  可在每个服务中加上 servlet.context
+    wechat-service: /wechat/**
+    pc-service: /pc/**
+logging:
+  config: config/log4j2.xml
+
+getway:
+  auth:
+    enable: false
+
+
+
