@@ -23,7 +23,7 @@ public class AuthFilter extends ZuulFilter {
     }
 
     @Override
-    public Object run() throws ZuulException {
+    public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
         ctx.getResponse();
 

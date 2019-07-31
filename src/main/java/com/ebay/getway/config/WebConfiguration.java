@@ -1,6 +1,11 @@
 package com.ebay.getway.config;
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import com.superarmyknife.toolbox.web.SAKToken;
+import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -61,14 +66,44 @@ public class WebConfiguration extends WebMvcConfigurationSupport {
 
     @Bean
     public RedisTemplate<String, SAKToken> redisTemplate(RedisConnectionFactory connectionFactory){
-        RedisTemplate<String, SAKToken> template = new RedisTemplate();
-        StringRedisSerializer string = new StringRedisSerializer();
-        JdkSerializationRedisSerializer jdk = new JdkSerializationRedisSerializer();
-        template.setKeySerializer(string);
-        template.setValueSerializer(jdk);
-        template.setHashValueSerializer(jdk);
-        template.setHashKeySerializer(string);
-        template.setConnectionFactory(connectionFactory);
-        return template;
+        RedisTemplate<String, SAKToken> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+        GenericFastJsonRedisSerializer genericFastJsonRedisSerializer = new GenericFastJsonRedisSerializer();
+        redisTemplate.setDefaultSerializer(genericFastJsonRedisSerializer);
+        redisTemplate.setValueSerializer(genericFastJsonRedisSerializer);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(genericFastJsonRedisSerializer);
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.afterPropertiesSet();
+
+        return redisTemplate;
+//        RedisTemplate<String, SAKToken> template = new RedisTemplate();
+//        StringRedisSerializer string = new StringRedisSerializer();
+//        JdkSerializationRedisSerializer jdk = new JdkSerializationRedisSerializer();
+//        template.setKeySerializer(string);
+//        template.setValueSerializer(jdk);
+//        template.setHashValueSerializer(jdk);
+//        template.setHashKeySerializer(string);
+//        template.setConnectionFactory(connectionFactory);
+//        return template;
+    }
+
+    /**
+     * 95      * 转换返回的object为json
+     * 96      * @return
+     * 97
+     */
+    @Bean
+    public HttpMessageConverters fastJsonHttpMessageConverters() {
+        // 1、需要先定义一个converter 转换器
+        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
+        // 2、添加fastJson 的配置信息，比如：是否要格式化返回的json数据
+        FastJsonConfig fastJsonConfig = new FastJsonConfig();
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
+        // 3、在convert 中添加配置信息
+        fastConverter.setFastJsonConfig(fastJsonConfig);
+        // 4、将convert 添加到converters当中
+        HttpMessageConverter<?> converter = fastConverter;
+        return new HttpMessageConverters(converter);
     }
 }

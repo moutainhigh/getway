@@ -25,13 +25,13 @@ public class TokenRepository {
     }
 
     public SAKToken getAndRefresh(String token){
-        SAKToken SAKToken = get(token);
-        if(SAKToken == null){
+        SAKToken sakToken = get(token);
+        if(sakToken == null){
             return null;
         }
         //同时刷新SAKToken和castoken，防止token失效
-        redisTemplate.expire(SAKToken.PREFIX + token,SAKToken.getTimeout(), TimeUnit.SECONDS);
-        redisTemplate.expire(GatewayConstants.CAS_TICKET_PREFIX + token,SAKToken.getTimeout(), TimeUnit.SECONDS);
-        return SAKToken;
+        redisTemplate.expire(SAKToken.PREFIX + token,sakToken.getTimeout(), TimeUnit.SECONDS);
+        redisTemplate.expire(GatewayConstants.CAS_TICKET_PREFIX + token,sakToken.getTimeout(), TimeUnit.SECONDS);
+        return sakToken;
     }
 }

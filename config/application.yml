@@ -38,7 +38,7 @@ logging:
 
 getway:
   auth:
-    enable: false
+    enable: true
 
 
 

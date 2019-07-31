@@ -36,7 +36,7 @@ public class UserInfoFilter extends ZuulFilter {
     }
 
     @Override
-    public Object run() throws ZuulException {
+    public Object run(){
         RequestContext requestContext = RequestContext.getCurrentContext();
         String requestUri = requestContext.getRequest().getRequestURI();
         if(requestUri.equals(GatewayConstants.CURRENT_USER_URI)){

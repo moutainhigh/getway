@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 @Slf4j
 public class TokenFilter extends ZuulFilter {
@@ -37,9 +38,21 @@ public class TokenFilter extends ZuulFilter {
         this.tokenRepository = tokenRepository;
     }
 
+    private static HashMap urlMap = new HashMap();
+    static {
+
+        urlMap.put("/pc/user/login","");
+
+    }
     @Override
-    public Object run() throws ZuulException {
+    public Object run() {
+
+
         RequestContext requestContext = RequestContext.getCurrentContext();
+        String requestUri = requestContext.getRequest().getRequestURI();
+        if (urlMap.containsKey(requestUri)){
+            return null;
+        }
         HttpServletRequest request = requestContext.getRequest();
         String token = request.getHeader(GatewayConstants.TOKEN_KEY);
 
@@ -62,7 +75,7 @@ public class TokenFilter extends ZuulFilter {
             return null;
         }
 
-
+        request.setAttribute(GatewayConstants.TOKEN_KEY,token);
         requestContext.set(GatewayConstants.TOKEN_KEY,token);
         //将用户ID保存到上下文
         requestContext.set(GatewayConstants.USER_ID,SAKToken.getUserResponseDO().getId());
