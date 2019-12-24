@@ -135,4 +135,10 @@ getway:
     enable: true
 
 
+info:
+  app:
+    name: Getway Service
+    description: 网关服务
+
+
 
