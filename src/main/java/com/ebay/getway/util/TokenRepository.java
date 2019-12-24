@@ -18,7 +18,7 @@ public class TokenRepository {
 
     public SAKToken get(String token){
         //先判断有没有单点登出过
-        if(!redisTemplate.hasKey(GatewayConstants.CAS_TICKET_PREFIX + token)){
+        if(!redisTemplate.hasKey(SAKToken.PREFIX + token)){
             return null;
         }
         return redisTemplate.opsForValue().get(SAKToken.PREFIX + token);

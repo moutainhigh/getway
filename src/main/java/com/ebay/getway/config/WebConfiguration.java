@@ -4,16 +4,18 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.superarmyknife.toolbox.web.SAKToken;
-import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,9 +24,11 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
+//@Configuration
 public class WebConfiguration extends WebMvcConfigurationSupport {
 
 
@@ -106,4 +110,20 @@ public class WebConfiguration extends WebMvcConfigurationSupport {
         HttpMessageConverter<?> converter = fastConverter;
         return new HttpMessageConverters(converter);
     }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter getMappingJackson2HttpMessageConverter() {
+        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        //设置日期格式
+        ObjectMapper objectMapper = new ObjectMapper();
+        SimpleDateFormat smt = new SimpleDateFormat("yyyy-MM-dd");
+        objectMapper.setDateFormat(smt);
+        mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
+        //设置中文编码格式
+        List<MediaType> list = new ArrayList<MediaType>();
+        list.add(MediaType.APPLICATION_JSON_UTF8);
+        mappingJackson2HttpMessageConverter.setSupportedMediaTypes(list);
+        return mappingJackson2HttpMessageConverter;
+    }
+
 }

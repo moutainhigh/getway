@@ -28,7 +28,7 @@ public class FilterConfiguration {
 
 
     @Bean
-    public TokenRepository tokenRepository(RedisTemplate<String, SAKToken> redisTemplate) {
+    public TokenRepository tokenRepository(RedisTemplate redisTemplate) {
         return new TokenRepository(redisTemplate);
     }
 

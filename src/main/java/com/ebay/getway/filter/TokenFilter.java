@@ -6,10 +6,12 @@ import com.ebay.getway.util.TokenRepository;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
+import com.superarmyknife.toolbox.handle.ResponseData;
 import com.superarmyknife.toolbox.rtndto.GeneratorResult;
 import com.superarmyknife.toolbox.web.SAKToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -41,7 +43,7 @@ public class TokenFilter extends ZuulFilter {
     private static HashMap urlMap = new HashMap();
     static {
 
-        urlMap.put("/pc/user/login","");
+        urlMap.put("/pc/user/login","1");
 
     }
     @Override
@@ -61,15 +63,15 @@ public class TokenFilter extends ZuulFilter {
             return null;
         }
 
-        SAKToken SAKToken = null;
+        SAKToken sakToken = null;
         try {
-            SAKToken = tokenRepository.getAndRefresh(token);
+            sakToken = tokenRepository.getAndRefresh(token);
         } catch (Exception e) {
             log.error("获取token失败 {}",token,e);
             authErrorSession(requestContext,token);
             return null;
         }
-        if(SAKToken == null){
+        if(sakToken == null){
             log.info("token is not found: {}",token);
             authErrorSession(requestContext,token);
             return null;
@@ -78,15 +80,15 @@ public class TokenFilter extends ZuulFilter {
         request.setAttribute(GatewayConstants.TOKEN_KEY,token);
         requestContext.set(GatewayConstants.TOKEN_KEY,token);
         //将用户ID保存到上下文
-        requestContext.set(GatewayConstants.USER_ID,SAKToken.getUserResponseDO().getId());
-        requestContext.addZuulRequestHeader(GatewayConstants.USER_ID,SAKToken.getUserResponseDO().getId() + "");
+        requestContext.set(GatewayConstants.USER_ID,sakToken.getUserResponseDO().getId());
+        requestContext.addZuulRequestHeader(GatewayConstants.USER_ID,sakToken.getUserResponseDO().getId() + "");
         return null;
     }
 
     private void authErrorSession(RequestContext requestContext,String token){
-        requestContext.getResponse().setContentType("text/html;charset=UTF-8");
+        requestContext.getResponse().setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         requestContext.setSendZuulResponse(false);
         requestContext.setResponseStatusCode(401);
-        requestContext.setResponseBody(JSONObject.toJSONString(GeneratorResult.genFailResult("没有权限")));
+        requestContext.setResponseBody(JSONObject.toJSONString(ResponseData.failure("没有权限")));
     }
 }

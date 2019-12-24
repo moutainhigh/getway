@@ -1,6 +1,27 @@
 spring:
   application:
     name: getway
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://rds790xv607y2v38496i.mysql.rds.aliyuncs.com/fission?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: test0505
+    password: Test1234
+    driverClassName: com.mysql.jdbc.Driver
+    #连接池的配置信息
+    initialSize: 5
+    minIdle: 5
+    maxActive: 200
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,slf4j
+    connectionProperties=druid.stat.mergeSql: true;druid.stat.slowSqlMillis=5000
   redis:
     #    host: 678221265f85483e.m.cnhza.kvstore.aliyuncs.com
     #    port: 6379
@@ -15,6 +36,28 @@ spring:
       max-idle: 1000
       testOnBorrow: false
       testOnReturn: false
+#  rabbitmq:
+#    address:
+#    username:
+#    password:
+#    cirtual-host: /
+#    connection-timeout: 15000
+#    cache:
+#      channel:
+#        size:45
+#    publisher-confirms: true
+#    publisher-returns: true
+#    template:
+#      mandatory: true
+#
+#    listener:
+#      simple:
+#        concurrency: 1
+#        #最大并发数
+#        max-concurrency: 5
+#
+#        acknowledge: manual
+#        prefetch: 1
 eureka:
   client:
     service-url:
@@ -33,8 +76,59 @@ zuul:
     #key 为服务名  后面为拦截的路径  可在每个服务中加上 servlet.context
     wechat-service: /wechat/**
     pc-service: /pc/**
+    activity-service: /activity/**
+  ribbon:
+    restclient:
+      enable: false
+    eager-load:
+      enabled: true
+      clients: pc-service, activity-service
 logging:
-  config: config/log4j2.xml
+  config: config/logback.xml
+  path: logs
+
+ribbon:
+  OkToRetryOnAllOperations: false
+  MaxAutoRetries: 1
+  ServerListRefreshInterval: 2000
+  ConnectTimeout: 30000
+  ReadTimeout: 300000
+  MaxAutoRetriesNextServer: 1
+  EnablePrimeConnections: true
+  ribbon:
+    restclient:
+      enabled: true
+  eureka:
+    enabled: true
+
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+        isolation:
+          thread:
+            timeoutInMilliseconds: 9000000
+feign:
+  httpclient:
+    enabled: true
+  hystrix:
+    enabled: true
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml, application/xml,application/json,application/x-www-form-urlencoded,application/form-data
+      min-request-size: 2048
+    response:
+      enable: true
+  client:
+    config:
+      feignName:
+        connectTimeout: 100000
+        readTimeOut: 100000
+
 
 getway:
   auth:
