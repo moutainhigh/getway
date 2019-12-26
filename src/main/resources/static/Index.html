@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<title>Simple Login Form</title>
+<meta charset="UTF-8" />
+<meta name="Designer" content="PremiumPixels.com">
+<meta name="Author" content="$hekh@r d-Ziner, CSSJUNTION.com">
+	<meta http-equiv="Expires" content="0">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-control" content="no-cache">
+	<meta http-equiv="Cache" content="no-cache">
+<link rel="stylesheet" type="text/css" href="css/reset.css">
+<link rel="stylesheet" type="text/css" href="css/structure.css">　
+	<script  type="text/javascript" src="/webjars/bycdao-ui/jquery/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="/webjars/bycdao-ui/cdao/swaggerbootstrapui.js?v=1.9.6"></script>
+	<script>
+		function login() {
+			// $.ajax({
+			// 	url: "/pc/login",
+			// 	data: {username: $("#username"),
+			// 					password: $("#password")},
+			// 	type: "POST",
+			// 	dataType: "json",
+			// 	success: function(data) {
+			// 		// data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再反序列化
+			// 					console.log(data)
+			//
+			// 	}
+			// });
+			$.post(
+					"/pc/login",
+					{"username": $("#username").val(),
+						"password": $("#password").val()},
+					function(data) {
+						// console.log(data)
+						// window.localStorage.setItem("SwaggerBootstrapUiSecuritys","{Authorization:\"123213\"}");
+						// var response = JSON.parse(data);
+						var value = data.data.token
+						var name = "token";
+
+						var globalParameterInstance=new SwaggerBootstrapUiParameter();
+						globalParameterInstance.name=name;
+						globalParameterInstance.in="header";
+						globalParameterInstance.value=value;
+						globalParameterInstance.txtValue=value;
+						globalParameterInstance.type="string";
+						globalParameterInstance.require=true;
+
+						var store=window.localStorage;
+						var globalparams=store["globalParameters"];
+
+						if ( checkExit(globalParameterInstance)){
+							updateAuth(globalParameterInstance,"globalParameters");
+						}else {
+							add(globalParameterInstance,"globalParameters")
+						}
+
+						window.location.href = "/doc.html";
+
+					},
+					"json"
+			);
+		}
+		/***
+		 * Swagger请求参数
+		 * @constructor
+		 */
+		var SwaggerBootstrapUiParameter=function () {
+			this.name=null;
+			//该属性用于过滤参数使用
+			this.ignoreFilterName=null;
+			this.require=null;
+			this.type=null;
+			this.in=null;
+			this.schema=false;
+			this.schemaValue=null;
+			this.value=null;
+			//JSR-303 annotations supports since 1.8.7
+			//默认状态为false
+			this.validateStatus=false;
+			this.validateInstance=null;
+			//引用类
+			this.def=null;
+			//des
+			this.description=null;
+			//文本框值
+			this.txtValue=null;
+			//枚举类型
+			this.enum=null;
+
+			this.id="param"+Math.round(Math.random()*1000000);
+			this.pid="-1";
+
+			this.level=1;
+			//参数是否显示在debug中
+			this.show=true;
+			//是否readOnly
+			this.readOnly=false;
+			this.example=null;
+
+
+			this.childrenTypes=new Array();
+			this.parentTypes=new Array();
+		}
+
+		function add(obj,key) {
+			var store=window.localStorage;
+			var globalparams=store[key];
+			if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+				//exists
+				globalparams=JSON.parse(globalparams);
+
+				globalparams.push(obj);
+			}else{
+				//not exists
+				globalparams=new Array();
+				globalparams.push(obj);
+			}
+			var gbStr=JSON.stringify(globalparams);
+			store.setItem(key,gbStr);
+		}
+		function updateAuth(param,key) {
+				var store = window.localStorage;
+				var globalparams=store[key];
+				globalparams=JSON.parse(globalparams);
+				$.each(globalparams,function (i, gp) {
+					if(gp.name==param.name){
+						gp.in=param.in;
+						gp.value=param.value;
+						gp.txtValue=param.value;
+					}
+				})
+				var gbStr=JSON.stringify(globalparams);
+				store.setItem(key,gbStr);
+
+		}
+
+		function checkExit(param) {
+			var flag=false;
+				var store = window.localStorage;
+				var globalparams=store["globalParameters"];
+				if(globalparams!=undefined&&globalparams!=null&&globalparams!=""){
+					globalparams=JSON.parse(globalparams);
+					$.each(globalparams,function (i, gp) {
+						if(gp.name==param.name){
+							flag=true;
+						}
+					})
+				}
+
+			return flag;
+		}
+	</script>
+</head>
+
+<body>
+<form class="box login" >
+	<fieldset class="boxBody">
+	  <label>Username</label>
+	  <input id="username" type="text" tabindex="1" placeholder="PremiumPixel" name="username" required>
+	  <label><a href="#" class="rLink" tabindex="5">Forget your password?</a>Password</label>
+	  <input id="password" type="password" tabindex="2" name="password" required>
+	</fieldset>
+	<footer>
+	  <label><input type="checkbox" tabindex="3">Keep me logged in</label>
+	  <input type="button" class="btnLogin" value="Login" tabindex="4" onclick="login()"/>
+	</footer>
+</form>
+<footer id="main">
+  <a href="http://wwww.cssjunction.com">Simple Login Form (HTML5/CSS3 Coded) by CSS Junction</a> | <a href="http://www.premiumpixels.com">PSD by Premium Pixels</a>
+</footer>
+</body>
+
+</html>

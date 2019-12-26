@@ -39,7 +39,7 @@ public class ErrorControllerHandel  extends AbstractErrorController {
      *     }
      * @return
      */
-    @RequestMapping
+    @RequestMapping("/error")
     @ResponseBody
     public ResponseData error(HttpServletRequest request) {
         Map<String, Object> body = getErrorAttributes(request,

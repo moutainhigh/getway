@@ -2,7 +2,7 @@ package com.ebay.getway.util;
 
 public class GatewayConstants {
 
-    public final static String TOKEN_KEY = "J-Token";
+    public final static String TOKEN_KEY = "token";
 
     public final static String USER_ID = "userId";
 

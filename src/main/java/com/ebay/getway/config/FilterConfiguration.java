@@ -1,5 +1,6 @@
 package com.ebay.getway.config;
 
+import com.ebay.getway.filter.AuthFilter;
 import com.ebay.getway.filter.TokenFilter;
 import com.ebay.getway.filter.UserInfoFilter;
 import com.ebay.getway.util.TokenRepository;
@@ -31,6 +32,7 @@ public class FilterConfiguration {
     public TokenRepository tokenRepository(RedisTemplate redisTemplate) {
         return new TokenRepository(redisTemplate);
     }
+
 
 
 }

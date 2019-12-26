@@ -2,12 +2,14 @@ package com.ebay.getway.filter;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@Slf4j
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 @Component
-public class AuthFilter extends ZuulFilter {
+public class SwaggerFilter extends ZuulFilter {
 
 
     @Override
@@ -17,7 +19,7 @@ public class AuthFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -27,11 +29,17 @@ public class AuthFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-        RequestContext ctx = RequestContext.getCurrentContext();
+//        RequestContext ctx = RequestContext.getCurrentContext();
+//        if (match(ctx.getRequest().getRequestURI())){
+//            // swagger
+//            String auth = (String) ctx.getRequest().getSession().getAttribute("Authorization");
+//
+//        }
 
-        log.debug("path==={}",ctx.getRequest().getRequestURI());
 
 
         return null;
     }
+
+
 }
