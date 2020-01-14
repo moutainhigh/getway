@@ -97,7 +97,7 @@ public class TokenFilter extends ZuulFilter {
             authErrorSession(requestContext,token);
             return null;
         }
-
+        log.debug("鉴权结束----");
         request.setAttribute(GatewayConstants.TOKEN_KEY,token);
         requestContext.set(GatewayConstants.TOKEN_KEY,token);
         requestContext.addZuulRequestHeader(GatewayConstants.TOKEN_KEY,sakToken.getId());

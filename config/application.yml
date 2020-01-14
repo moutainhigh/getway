@@ -148,3 +148,7 @@ swagger:
     username: root
     password: root
 
+
+ignore:
+  clients:
+    - test

@@ -9,6 +9,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableZuulProxy
 @EnableSwagger2
+@SpringCloudApplication
 public class GetwayApplication {
 
     public static void main(String[] args) {
